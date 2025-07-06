@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🛡 User Credentials Dashboard</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      padding: 40px;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: #fff;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    th, td {
+      padding: 12px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+    th {
+      background-color: #222;
+      color: white;
+    }
+    tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+
+  <h2>📋 User Credentials Dashboard </h2>
+
+  <table id="userTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Password</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script type="module">
+    const supabaseUrl = 'https://cjwoizyfasbxbmtcmnpj.supabase.co'; // 🔁 Replace with your Supabase URL
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd29penlmYXNieGJtdGNtbnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjQ5MzcsImV4cCI6MjA2NzQwMDkzN30.dwPcx-uCfixYxF-YAhZAdZR1VGkuOSI3sgCLeWX7xTM'; // 🔁 Replace with your Supabase anon or service key
+
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+    const supabase = createClient(supabaseUrl, supabaseKey);
+
+    async function loadUsers() {
+      const { data, error } = await supabase
+        .from('zero_data') // Make sure this matches your exact table name
+        .select('id, username, email, password')
+
+      console.log('DATA:', data);
+      console.log('ERROR:', error);
+
+      if (error) {
+        alert('Error loading users');
+        return;
+      }
+
+      const tbody = document.querySelector('#userTable tbody');
+      data.forEach(user => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${user.id}</td>
+          <td>${user.username || '-'}</td>
+          <td>${user.email || '-'}</td>
+          <td>${user.password || '-'}</td>
+          
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    loadUsers();
+  </script>
+
+</body>
+</html>

@@ -57,6 +57,16 @@
 
     const supabase = createClient(supabaseUrl, supabaseKey);
 
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        // No valid login session → send back to login page
+        window.location.href = "index.html"; // change to your login page path
+      }
+    }
+  
+    checkAuth();
+
     async function loadUsers() {
       const { data, error } = await supabase
         .from('zero_data') // Make sure this matches your exact table name

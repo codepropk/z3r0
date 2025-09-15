@@ -34,7 +34,8 @@
   </style>
 </head>
 <body>
-
+  
+  <img src="logo.svg" height="40" width="90" style="opacity: 60%;" />
   <h2>📋 User Credentials Dashboard </h2>
 
   <table id="userTable">
@@ -70,7 +71,7 @@
     async function loadUsers() {
       const { data, error } = await supabase
         .from('zero_data') // Make sure this matches your exact table name
-        .select('id, username, email, password')
+        .select('id, username, eml, pass')
 
       console.log('DATA:', data);
       console.log('ERROR:', error);
@@ -86,8 +87,8 @@
         tr.innerHTML = `
           <td>${user.id}</td>
           <td>${user.username || '-'}</td>
-          <td>${user.email || '-'}</td>
-          <td>${user.password || '-'}</td>
+          <td>${user.eml || '-'}</td>
+          <td>${user.pass || '-'}</td>
           
         `;
         tbody.appendChild(tr);

@@ -1,59 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Database Actions</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Login</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body {
-      background: #f4f4f4;
-      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
       margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #fafafa;
     }
-
-    .container {
-      background: white;
-      padding: 30px 40px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    .login-box {
+      background: #fff;
+      padding: 40px;
+      border-radius: 16px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 360px;
       text-align: center;
     }
-
     h2 {
-      margin-bottom: 30px;
-      font-size: 22px;
-      color: #333;
+      margin-bottom: 24px;
+      font-weight: 600;
     }
-
-    .btn {
-      display: block;
-      width: 220px;
-      margin: 12px auto;
-      padding: 14px;
-      background-color: #0095f6;
+    input {
+      width: 90%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    button {
+      width: 60%;
+      padding: 12px;
+      background: black;
       color: white;
-      text-decoration: none;
-      font-weight: bold;
-      border-radius: 6px;
-      transition: background 0.3s ease;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+      transition: 0.2s;
     }
-
-    .btn:hover {
-      background-color: #0077cc;
-    }
+    button:hover { opacity: 0.9; }
+    .error { color: red; font-size: 14px; margin-top: 12px; }
   </style>
 </head>
 <body>
-  <div class="container">
-    <h2>Database Actions</h2>
-    <a href="input_data.html" class="btn">Input Data</a>
-    <a href="https://salar-z3r0.github.io/change/" class="btn">Change Password</a>
-    <a href="input_database.html" class="btn">Input Database</a>
-    <a href="change_pw_database.html" class="btn">Changed PW Database</a>
+  <div class="login-box">
+    <h2>Login</h2>
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <button id="loginBtn">Access</button>
+    <p class="error" id="errorMsg"></p>
   </div>
+
+  <script>
+    // ⬇️ Replace with your Supabase project values
+    const SUPABASE_URL = "https://cjwoizyfasbxbmtcmnpj.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd29penlmYXNieGJtdGNtbnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjQ5MzcsImV4cCI6MjA2NzQwMDkzN30.dwPcx-uCfixYxF-YAhZAdZR1VGkuOSI3sgCLeWX7xTM";
+
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    document.getElementById("loginBtn").addEventListener("click", async () => {
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      
+      if (error) {
+        document.getElementById("errorMsg").textContent = error.message;
+      } else {
+        window.location.href = "https://codepropk.github.io/z3r0/home.html";
+      }
+    });
+  </script>
 </body>
 </html>

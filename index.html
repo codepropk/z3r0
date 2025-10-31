@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ACCESS Z3R0</title>
+  
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" href="apple-touch-icon.png" />
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    :root{
+      --bg:#020617;
+      --neon:#00eaff;
+      --neon-soft:#80ffff;
+      --panel: rgba(0,10,20,0.9);
+      --accent:#00ff99;
+      --danger:#ff4d4d;
+    }
+
+    html,body{height:100%;margin:0;}
+
+    body {
+      background: var(--bg);
+      color: var(--neon);
+      font-family: 'Share Tech Mono', monospace;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      overflow: hidden;
+    }
+
+    /* Animated grid background */
+    body::before{
+      content:"";
+      position:fixed; inset:0;
+      background:
+        linear-gradient(90deg, rgba(0,234,255,0.04) 1px, transparent 1px),
+        linear-gradient(rgba(0,234,255,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: moveGrid 12s linear infinite;
+      z-index:0;
+      pointer-events:none;
+    }
+    @keyframes moveGrid { from { background-position: 0 0, 0 0 } to { background-position: 40px 40px, 40px 40px } }
+
+    /* Center panel */
+    .login-box {
+      position: relative;
+      z-index: 1;
+      width: 100%;
+      max-width: 420px;
+      background: rgba(0, 10, 20, 0.95); /* increased opacity for better visibility */
+      padding: 36px 32px;
+      border-radius: 12px;
+      box-shadow: 0 0 40px rgba(0,234,255,0.12), inset 0 1px 0 rgba(255,255,255,0.02);
+      border: 1px solid rgba(0,234,255,0.12);
+      text-align: center;
+      backdrop-filter: blur(4px);
+    }
+
+
+    /* Title with flicker */
+    .title {
+      font-size: 20px;
+      margin: 0 0 18px 0;
+      text-shadow: 0 0 16px var(--neon);
+      animation: flicker 3s infinite;
+    }
+    @keyframes flicker {
+      0%,18%,22%,25%,53%,57%,100%{opacity:1}
+      20%,24%,55%{opacity:0.3}
+    }
+
+    .logo {
+      height:100px; opacity:0.7; margin-bottom:12px;
+    }
+
+    form { display: flex; flex-direction: column; gap:12px; align-items:center; }
+
+    .field {
+      width: 100%;
+      max-width: 360px;
+      position: relative;
+    }
+
+    input[type="email"],
+    input[type="password"]{
+      width: 80%;
+      padding: 12px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(128,255,255,0.4);
+      background: rgba(0,0,0,0.35);
+      color: var(--neon);
+      outline: none;
+      font-size: 14px;
+      transition: box-shadow .18s ease, transform .12s ease, border-color .12s ease;
+      caret-color: var(--neon);
+      text-shadow: 0 0 2px rgba(0,234,255,0.05);
+    }
+
+    input::placeholder { color: rgba(128,255,255,0.4); }
+
+    input:focus{
+      border-color: var(--neon-soft);
+      box-shadow: 0 0 20px rgba(0,234,255,0.12);
+      transform: translateY(-1px);
+    }
+
+    /* neon button */
+    .btn {
+      width: 50%;
+      min-width: 160px;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: var(--neon);
+      color: #020617;
+      border: none;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 0 20px rgba(0,234,255,0.12);
+      transition: transform .12s ease, box-shadow .18s ease, filter .12s;
+      text-transform: uppercase;
+      letter-spacing: .6px;
+    }
+
+    .btn:hover{
+      transform: translateY(-3px);
+      box-shadow: 0 0 34px rgba(0,255,255,0.18), 0 0 64px rgba(0,234,255,0.08);
+      animation: neonPulse 1.6s infinite alternate;
+    }
+    .btn:active{ transform: translateY(-1px) scale(.998); }
+
+    @keyframes neonPulse {
+      from{ filter: brightness(1); }
+      to{ filter: brightness(1.15) saturate(1.05); }
+    }
+
+    /* small info / error lines */
+    .msg { height:20px; font-size:13px; margin-top:6px; color:var(--neon-soft); }
+    .msg.error { color: var(--danger); text-shadow: none; }
+
+    /* helper for keyboard hint */
+    .hint {
+      margin-top:10px;
+      font-size:12px;
+      color: rgba(128,255,255,0.4); /* brighter and more visible */
+      text-shadow: 0 0 4px rgba(0,255,255,0.2);
+    }
+
+
+    /* responsive */
+    @media (max-width:420px){
+      .btn { width: 78%; }
+      .login-box { padding: 28px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="login-box" role="main" aria-labelledby="title">
+    <img src="logo.png" alt="logo" class="logo" />
+    <h1 class="title" id="title"> LOG IN</h1>
+
+    <form id="loginForm" autocomplete="on">
+      <div class="field">
+        <input id="email" type="email" placeholder="Email" inputmode="email" required />
+      </div>
+
+      <div class="field">
+        <input id="password" type="password" placeholder="Password" required />
+      </div>
+
+      <button type="submit" id="loginBtn" class="btn">ACCESS</button>
+
+      <div id="msg" class="msg" aria-live="polite"></div>
+      <div class="hint">Press Enter to submit • Secure session required</div>
+    </form>
+  </div>
+
+  <script>
+    // ---------- Replace with your Supabase project values ----------
+    const SUPABASE_URL = "https://cjwoizyfasbxbmtcmnpj.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd29penlmYXNieGJtdGNtbnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjQ5MzcsImV4cCI6MjA2NzQwMDkzN30.dwPcx-uCfixYxF-YAhZAdZR1VGkuOSI3sgCLeWX7xTM";
+    // --------------------------------------------------------------
+
+    // init supabase (window.supabase is provided by the CDN script)
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const form = document.getElementById('loginForm');
+    const emailEl = document.getElementById('email');
+    const passEl = document.getElementById('password');
+    const btn = document.getElementById('loginBtn');
+    const msgEl = document.getElementById('msg');
+
+    let loading = false;
+    function setLoading(state){
+      loading = state;
+      btn.disabled = state;
+      btn.style.opacity = state ? 0.8 : 1;
+      btn.textContent = state ? 'ACCESSING...' : 'ACCESS';
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (loading) return;
+      msgEl.className = 'msg';
+      msgEl.textContent = '';
+
+      const email = emailEl.value.trim();
+      const password = passEl.value;
+
+      if (!email || !password) {
+        msgEl.className = 'msg error';
+        msgEl.textContent = 'Provide email and password';
+        return;
+      }
+
+      try {
+        setLoading(true);
+        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        if (error) {
+          // handle common errors
+          msgEl.className = 'msg error';
+          msgEl.textContent = error.message || 'Sign-in failed';
+          setLoading(false);
+          return;
+        }
+
+        // success → redirect (change to your desired location)
+        msgEl.className = 'msg';
+        msgEl.textContent = 'Access granted. Redirecting…';
+        // small delay so user can see message
+        setTimeout(() => {
+          window.location.href = "https://codepropk.github.io/z3r0/"; // ← change if needed
+        }, 700);
+      } catch (err) {
+        msgEl.className = 'msg error';
+        msgEl.textContent = err.message || 'Unexpected error';
+        setLoading(false);
+      }
+    });
+
+    // optional: focus email on load
+    emailEl.focus();
+  </script>
+</body>
+</html>

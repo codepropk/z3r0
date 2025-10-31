@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>VISITOR TRACKER LOG</title>
+  
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" href="apple-touch-icon.png" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background-color: #020617;
+      color: #00eaff;
+      margin: 0;
+      overflow-x: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Animated grid background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: 
+        linear-gradient(90deg, rgba(0,234,255,0.05) 1px, transparent 1px),
+        linear-gradient(rgba(0,234,255,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: moveGrid 10s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes moveGrid {
+      from { background-position: 0 0, 0 0; }
+      to { background-position: 40px 40px, 40px 40px; }
+    }
+
+    header {
+      background: rgba(0, 10, 20, 0.9);
+      border-bottom: 1px solid rgba(0,234,255,0.3);
+      padding: 16px 24px;
+      text-shadow: 0 0 10px #00eaff;
+      font-size: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 2;
+    }
+
+    header button {
+      background: none;
+      border: 1px solid #00eaff;
+      color: #00eaff;
+      padding: 6px 14px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    header button:hover {
+      background: #00eaff;
+      color: #020617;
+      box-shadow: 0 0 20px #00eaff;
+    }
+
+    .container {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      position: relative;
+      z-index: 1;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      background: rgba(0, 10, 20, 0.7);
+      border: 1px solid rgba(0,234,255,0.2);
+      box-shadow: 0 0 20px rgba(0,234,255,0.1);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    th, td {
+      border-bottom: 1px solid rgba(0,234,255,0.1);
+      padding: 10px;
+      text-align: left;
+    }
+
+    th {
+      background: rgba(0, 234, 255, 0.1);
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: #00eaff;
+    }
+
+    tr:hover {
+      background: rgba(0,234,255,0.05);
+      transition: 0.2s;
+    }
+
+    .empty {
+      text-align: center;
+      padding: 20px;
+      opacity: 0.6;
+    }
+
+    /* Flicker animation for title */
+    .flicker {
+      animation: flicker 3s infinite;
+    }
+
+    @keyframes flicker {
+      0%, 18%, 22%, 25%, 53%, 57%, 100% { opacity: 1; }
+      20%, 24%, 55% { opacity: 0.3; }
+    }
+
+    /* Scrollbar styling */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0,234,255,0.4);
+      border-radius: 4px;
+    }
+
+    .logo {
+      height:50px; width: 50px; opacity:0.7; margin-right:0;
+
+  </style>
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo" class="logo" />
+    <div class="flicker">VISITOR TRACKER LOG</div>
+    <button onclick="loadLogs()">REFRESH</button>
+  </header>
+
+  <div class="container">
+    <table id="logTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>IP ADDRESS</th>
+          <th>USER AGENT</th>
+          <th>REFERRER</th>
+          <th>PAGE URL</th>
+          <th>TIME</th>
+        </tr>
+      </thead>
+      <tbody id="logBody">
+        <tr><td colspan="6" class="empty">Loading...</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    const supabase = createClient(
+      'https://cjwoizyfasbxbmtcmnpj.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd29penlmYXNieGJtdGNtbnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjQ5MzcsImV4cCI6MjA2NzQwMDkzN30.dwPcx-uCfixYxF-YAhZAdZR1VGkuOSI3sgCLeWX7xTM'
+    );
+
+    // ✅ Supabase Auth Check
+    
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        // Redirect to login page if not logged in
+        window.location.href = 'index.html'; // change this to your login page
+      }
+    }
+
+    // Call it immediately on page load
+    checkAuth();
+    
+
+    async function loadLogs() {
+      const tbody = document.getElementById('logBody');
+      tbody.innerHTML = `<tr><td colspan="6" class="empty">Fetching records...</td></tr>`;
+
+      const { data, error } = await supabase
+        .from('visit_logs')
+        .select('*')
+        .order('visit_time', { ascending: true })
+        .limit(500);
+
+      if (error) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty">⚠️ Error: ${error.message}</td></tr>`;
+        return;
+      }
+
+      if (!data || data.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="empty">No records found.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = '';
+      data.forEach(row => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${row.id}</td>
+          <td>${row.ip_address || '-'}</td>
+          <td style="max-width:250px;word-break:break-word;">${row.user_agent || '-'}</td>
+          <td>${row.referrer || '-'}</td>
+          <td style="color:#80ffff">${row.page_url || '-'}</td>
+          <td>${new Date(row.visit_time).toLocaleString()}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    // ✅ Attach function to window so HTML can see it
+    window.loadLogs = loadLogs;
+
+    // Run once on page load
+    loadLogs();
+  </script>
+
+</body>
+</html>

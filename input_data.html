@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>INPUT DATA</title>
+  
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" href="apple-touch-icon.png" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background-color: #020617;
+      color: #00eaff;
+      margin: 0;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+
+    /* Animated grid background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: 
+        linear-gradient(90deg, rgba(0,234,255,0.05) 1px, transparent 1px),
+        linear-gradient(rgba(0,234,255,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: moveGrid 10s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes moveGrid {
+      from { background-position: 0 0, 0 0; }
+      to { background-position: 40px 40px, 40px 40px; }
+    }
+
+    .container {
+      background: rgba(0, 10, 20, 0.9);
+      border: 1px solid rgba(0,234,255,0.3);
+      border-radius: 12px;
+      padding: 40px 30px;
+      width: 360px;
+      text-align: center;
+      box-shadow: 0 0 40px rgba(0,234,255,0.3);
+      position: relative;
+      z-index: 1;
+    }
+
+    h3 {
+      font-size: 24px;
+      margin-bottom: 15px;
+      text-shadow: 0 0 10px #00eaff;
+      animation: flicker 3s infinite;
+    }
+
+    @keyframes flicker {
+      0%,18%,22%,25%,53%,57%,100% { opacity: 1; }
+      20%,24%,55% { opacity: 0.3; }
+    }
+
+    input {
+      width: 90%;
+      padding: 14px 10px;
+      margin: 12px auto;
+      border: 1px solid #00eaff;
+      border-radius: 6px;
+      font-size: 14px;
+      display: block;
+      background: rgba(0,0,0,0.3);
+      color: #00eaff;
+      outline: none;
+      transition: 0.3s;
+    }
+
+    input:focus {
+      border-color: #80ffff;
+      box-shadow: 0 0 12px #00eaff;
+      background: rgba(0,0,0,0.6);
+    }
+
+    button {
+      width: 90%;
+      padding: 14px;
+      margin: 26px auto 0;
+      background-color: #00eaff;
+      color: #020617;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      display: block;
+      box-shadow: 0 0 20px #00eaff;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      background: #020617;
+      color: #00eaff;
+      box-shadow: 0 0 30px #80ffff, 0 0 60px #00eaff;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #00eaff;
+      text-shadow: 0 0 5px #00eaff;
+    }
+
+    .success { color: #00ff85; text-shadow: 0 0 10px #00ff85; }
+    .error { color: #ff3c3c; text-shadow: 0 0 10px #ff3c3c; }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0,234,255,0.4);
+      border-radius: 4px;
+    }
+
+    .logo {
+      height:80px; width: 80px; opacity:0.7; margin-bottom:8px;
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h3>INPUT DATA</h3>
+
+    <input type="text" id="un" placeholder="Username" />
+    <input type="text" id="el" placeholder="Email" />
+    <input type="text" id="pd" placeholder="Password" />
+
+    <button onclick="storePasswords()">INPUT</button>
+    
+    <div id="message" class="message"></div>
+  
+  </div>
+
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+
+    const supabase = createClient(
+      'https://cjwoizyfasbxbmtcmnpj.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd29penlmYXNieGJtdGNtbnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjQ5MzcsImV4cCI6MjA2NzQwMDkzN30.dwPcx-uCfixYxF-YAhZAdZR1VGkuOSI3sgCLeWX7xTM'
+    );
+
+    // ✅ Auth check
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = 'index.html';
+      }
+    }
+
+    checkAuth();
+
+    // ✅ Store data
+    window.storePasswords = async function () {
+      const username = document.getElementById('un').value.trim();
+      const email = document.getElementById('el').value.trim();
+      const password = document.getElementById('pd').value.trim();
+      const message = document.getElementById('message');
+
+      message.textContent = '';
+      message.className = 'message';
+
+      const { error } = await supabase.from('zero_data').insert([
+        { username: username, eml: email, pass: password }
+      ]);
+
+      if (error) {
+        message.textContent = '⚠️ Error: ' + error.message;
+        message.classList.add('error');
+      } else {
+        message.textContent = '✅ Input Done';
+        message.classList.add('success');
+
+        setTimeout(() => {
+          window.location.href = '';
+        }, 1500);
+      }
+    }
+  </script>
+</body>
+</html>

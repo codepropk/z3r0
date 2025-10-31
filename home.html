@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>DATABASE ACTIONS</title>
+  
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" href="apple-touch-icon.png" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap');
+
+    body {
+      font-family: 'Share Tech Mono', monospace;
+      background-color: #020617;
+      color: #00eaff;
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 30px;
+      overflow-x: hidden;
+    }
+
+    /* Animated grid background */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: 
+        linear-gradient(90deg, rgba(0,234,255,0.05) 1px, transparent 1px),
+        linear-gradient(rgba(0,234,255,0.05) 1px, transparent 1px);
+      background-size: 40px 40px;
+      animation: moveGrid 12s linear infinite;
+      z-index: 0;
+    }
+
+    @keyframes moveGrid {
+      from { background-position: 0 0, 0 0; }
+      to { background-position: 40px 40px, 40px 40px; }
+    }
+
+    .container {
+      background: rgba(0, 10, 20, 0.9);
+      padding: 40px 50px;
+      border-radius: 12px;
+      box-shadow: 0 0 40px rgba(0,234,255,0.2);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      width: 320px;
+    }
+
+    .container img {
+      height: 90px;
+      width: 90px;
+      opacity: 0.6;
+      margin-bottom: 10px;
+    }
+
+    h2 {
+      margin-bottom: 30px;
+      font-size: 22px;
+      text-shadow: 0 0 10px #00eaff;
+      animation: flicker 3s infinite;
+    }
+
+    @keyframes flicker {
+      0%,18%,22%,25%,53%,57%,100% { opacity: 1; }
+      20%,24%,55% { opacity: 0.3; }
+    }
+
+    .btn {
+      display: block;
+      width: 90%;
+      margin: 12px 0;
+      padding: 14px;
+      background-color: #00eaff;
+      color: #020617;
+      text-decoration: none;
+      font-weight: bold;
+      border-radius: 6px;
+      box-shadow: 0 0 20px #00eaff;
+      transition: all 0.3s ease;
+      cursor: pointer; /* ✅ pointer cursor */
+      text-align: center;
+    }
+
+    .btn:hover {
+      background-color: #020617;
+      color: #00eaff;
+      box-shadow: 0 0 30px #80ffff, 0 0 60px #00eaff;
+      transform: translateY(-2px);
+      animation: neonGlow 1.5s infinite alternate;
+    }
+
+    @keyframes neonGlow {
+      from { box-shadow: 0 0 30px #80ffff, 0 0 60px #00eaff; }
+      to { box-shadow: 0 0 40px #00ffff, 0 0 80px #00eaff; }
+    }
+
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(0,234,255,0.4);
+      border-radius: 4px;
+    }
+  
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <img src="logo.png" alt="Logo" class="logo" />
+    
+    <h2>DATABASE ACTIONS</h2>
+
+    <a href="input_data.html" class="btn">Input Data</a>
+    <a href="https://sec-autho.vercel.app/" class="btn">Change Password</a>
+    <a href="input_database.html" class="btn">Input Database</a>
+    <a href="chan-insta_db.html" class="btn">Chan-insta Database</a>
+    <a href="log_checker.html" class="btn">Log Checker</a>
+
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://cjwoizyfasbxbmtcmnpj.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd29penlmYXNieGJtdGNtbnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjQ5MzcsImV4cCI6MjA2NzQwMDkzN30.dwPcx-uCfixYxF-YAhZAdZR1VGkuOSI3sgCLeWX7xTM";
+    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  
+    async function checkAuth() {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        window.location.href = "index.html";
+      }
+    }
+  
+    checkAuth();
+  </script>
+
+</body>
+</html>

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>INPUT DASHBOARD</title>
+  <meta charset="UTF-8" />
+  <title>INPUT DATA</title>
   
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/png" href="apple-touch-icon.png" />
@@ -16,12 +16,12 @@
       background-color: #020617;
       color: #00eaff;
       margin: 0;
-      min-height: 100vh;
+      overflow: hidden;
+      height: 100vh;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
       align-items: center;
-      padding: 30px;
-      overflow-x: hidden;
+      flex-direction: column;
     }
 
     /* Animated grid background */
@@ -34,7 +34,7 @@
         linear-gradient(90deg, rgba(0,234,255,0.05) 1px, transparent 1px),
         linear-gradient(rgba(0,234,255,0.05) 1px, transparent 1px);
       background-size: 40px 40px;
-      animation: moveGrid 12s linear infinite;
+      animation: moveGrid 10s linear infinite;
       z-index: 0;
     }
 
@@ -43,22 +43,21 @@
       to { background-position: 40px 40px, 40px 40px; }
     }
 
-    header {
+    .container {
+      background: rgba(0, 10, 20, 0.9);
+      border: 1px solid rgba(0,234,255,0.3);
+      border-radius: 12px;
+      padding: 40px 30px;
+      width: 360px;
       text-align: center;
-      margin-bottom: 30px;
-      z-index: 1;
+      box-shadow: 0 0 40px rgba(0,234,255,0.3);
       position: relative;
+      z-index: 1;
     }
 
-    header img {
-      height: 40px;
-      width: 90px;
-      opacity: 0.6;
-    }
-
-    header h2 {
-      margin: 10px 0 0 0;
+    h3 {
       font-size: 24px;
+      margin-bottom: 15px;
       text-shadow: 0 0 10px #00eaff;
       animation: flicker 3s infinite;
     }
@@ -68,40 +67,56 @@
       20%,24%,55% { opacity: 0.3; }
     }
 
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      background: rgba(0,10,20,0.8);
-      border: 1px solid rgba(0,234,255,0.3);
-      box-shadow: 0 0 20px rgba(0,234,255,0.2);
-      border-radius: 8px;
-      overflow: hidden;
-      z-index: 1;
-      position: relative;
-    }
-
-    th, td {
-      padding: 12px 15px;
-      text-align: left;
-      border-bottom: 1px solid rgba(0,234,255,0.1);
-    }
-
-    th {
-      background: rgba(0,234,255,0.1);
-      text-transform: uppercase;
-      font-size: 13px;
-      letter-spacing: 1px;
+    input {
+      width: 90%;
+      padding: 14px 10px;
+      margin: 12px auto;
+      border: 1px solid #00eaff;
+      border-radius: 6px;
+      font-size: 14px;
+      display: block;
+      background: rgba(0,0,0,0.3);
       color: #00eaff;
+      outline: none;
+      transition: 0.3s;
     }
 
-    tr:hover {
-      background: rgba(0,234,255,0.05);
-      transition: 0.2s;
+    input:focus {
+      border-color: #80ffff;
+      box-shadow: 0 0 12px #00eaff;
+      background: rgba(0,0,0,0.6);
     }
 
-    td {
-      color: #80ffff;
+    button {
+      width: 90%;
+      padding: 14px;
+      margin: 26px auto 0;
+      background-color: #00eaff;
+      color: #020617;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      display: block;
+      box-shadow: 0 0 20px #00eaff;
+      transition: 0.3s;
     }
+
+    button:hover {
+      background: #020617;
+      color: #00eaff;
+      box-shadow: 0 0 30px #80ffff, 0 0 60px #00eaff;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      color: #00eaff;
+      text-shadow: 0 0 5px #00eaff;
+    }
+
+    .success { color: #00ff85; text-shadow: 0 0 10px #00ff85; }
+    .error { color: #ff3c3c; text-shadow: 0 0 10px #ff3c3c; }
 
     ::-webkit-scrollbar {
       width: 6px;
@@ -112,75 +127,69 @@
     }
 
     .logo {
-      height:120px; width: 120px; opacity:0.7; margin-bottom:12px;
+      height:80px; width: 80px; opacity:0.7; margin-bottom:8px;
 
   </style>
 </head>
 <body>
-
-  <header>
+  <div class="container">
     <img src="logo.png" alt="Logo" class="logo" />
-    <h2>INPUT DASHBOARD</h2>
-  </header>
+    <h3>INPUT DATA</h3>
 
-  <table id="userTable">
-    <thead>
-      <tr>
-        <th>ID</th>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Password</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+    <input type="text" id="un" placeholder="Username" />
+    <input type="text" id="el" placeholder="Email" />
+    <input type="text" id="pd" placeholder="Password" />
+
+    <button onclick="storePasswords()">INPUT</button>
+    
+    <div id="message" class="message"></div>
+  
+  </div>
 
   <script type="module">
-    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
 
-    const supabaseUrl = 'https://cjwoizyfasbxbmtcmnpj.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd29penlmYXNieGJtdGNtbnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjQ5MzcsImV4cCI6MjA2NzQwMDkzN30.dwPcx-uCfixYxF-YAhZAdZR1VGkuOSI3sgCLeWX7xTM';
-    const supabase = createClient(supabaseUrl, supabaseKey);
+    const supabase = createClient(
+      'https://cjwoizyfasbxbmtcmnpj.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd29penlmYXNieGJtdGNtbnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjQ5MzcsImV4cCI6MjA2NzQwMDkzN30.dwPcx-uCfixYxF-YAhZAdZR1VGkuOSI3sgCLeWX7xTM'
+    );
 
-    // ✅ Supabase Auth Check
+    // ✅ Auth check
     async function checkAuth() {
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        // Redirect to login page if not logged in
-        window.location.href = 'index.html'; // change this to your login page
+        window.location.href = 'index.html';
       }
     }
 
-    // Call it immediately on page load
     checkAuth();
 
+    // ✅ Store data
+    window.storePasswords = async function () {
+      const username = document.getElementById('un').value.trim();
+      const email = document.getElementById('el').value.trim();
+      const password = document.getElementById('pd').value.trim();
+      const message = document.getElementById('message');
 
-    async function loadUsers() {
-      const { data, error } = await supabase
-        .from('zero_data')
-        .select('id, username, eml, pass');
+      message.textContent = '';
+      message.className = 'message';
+
+      const { error } = await supabase.from('zero_data').insert([
+        { username: username, eml: email, pass: password }
+      ]);
 
       if (error) {
-        alert('Error loading users');
-        return;
+        message.textContent = '⚠️ Error: ' + error.message;
+        message.classList.add('error');
+      } else {
+        message.textContent = '✅ Input Done';
+        message.classList.add('success');
+
+        setTimeout(() => {
+          window.location.href = '';
+        }, 1500);
       }
-
-      const tbody = document.querySelector('#userTable tbody');
-      tbody.innerHTML = '';
-      data.forEach(user => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td>${user.id}</td>
-          <td>${user.username || '-'}</td>
-          <td>${user.eml || '-'}</td>
-          <td>${user.pass || '-'}</td>
-        `;
-        tbody.appendChild(tr);
-      });
     }
-
-    loadUsers();
   </script>
-
 </body>
 </html>

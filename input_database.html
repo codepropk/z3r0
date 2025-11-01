@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>INPUT DATA</title>
+  <meta charset="UTF-8">
+  <title>INPUT DASHBOARD</title>
   
   <link rel="icon" type="image/x-icon" href="favicon.ico" />
   <link rel="icon" type="image/png" href="apple-touch-icon.png" />
@@ -16,12 +16,12 @@
       background-color: #020617;
       color: #00eaff;
       margin: 0;
-      overflow: hidden;
-      height: 100vh;
+      min-height: 100vh;
       display: flex;
-      justify-content: center;
-      align-items: center;
       flex-direction: column;
+      align-items: center;
+      padding: 30px;
+      overflow-x: hidden;
     }
 
     /* Animated grid background */
@@ -31,10 +31,10 @@
       top: 0; left: 0;
       width: 100%; height: 100%;
       background: 
-        linear-gradient(90deg, rgba(0,234,255,0.05) 1px, transparent 1px),
-        linear-gradient(rgba(0,234,255,0.05) 1px, transparent 1px);
+        linear-gradient(90deg, rgba(0,234,255,0.15) 1px, transparent 1px),
+        linear-gradient(rgba(0,234,255,0.15) 1px, transparent 1px);
       background-size: 40px 40px;
-      animation: moveGrid 10s linear infinite;
+      animation: moveGrid 12s linear infinite;
       z-index: 0;
     }
 
@@ -43,21 +43,23 @@
       to { background-position: 40px 40px, 40px 40px; }
     }
 
-    .container {
-      background: rgba(0, 10, 20, 0.9);
-      border: 1px solid rgba(0,234,255,0.3);
-      border-radius: 12px;
-      padding: 40px 30px;
-      width: 360px;
+    header {
       text-align: center;
-      box-shadow: 0 0 40px rgba(0,234,255,0.3);
-      position: relative;
+      margin-bottom: 30px;
       z-index: 1;
+      position: relative;
     }
 
-    h3 {
+    header img {
+      height: 80px;
+      width: 80px;
+      opacity: 0.7;
+      margin-bottom: 10px;
+    }
+
+    header h2 {
+      margin: 10px 0 0 0;
       font-size: 24px;
-      margin-bottom: 15px;
       text-shadow: 0 0 10px #00eaff;
       animation: flicker 3s infinite;
     }
@@ -67,129 +69,147 @@
       20%,24%,55% { opacity: 0.3; }
     }
 
-    input {
-      width: 90%;
-      padding: 14px 10px;
-      margin: 12px auto;
-      border: 1px solid #00eaff;
-      border-radius: 6px;
-      font-size: 14px;
-      display: block;
-      background: rgba(0,0,0,0.3);
+    /* Responsive table container */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      border-radius: 8px;
+      box-shadow: 0 0 30px rgba(0,234,255,0.1);
+      position: relative;
+      z-index: 1;
+    }
+
+    table {
+      width: 100%;
+      min-width: 600px;
+      border-collapse: collapse;
+      background: rgba(0,10,20,0.8);
+      border: 1px solid rgba(0,234,255,0.3);
+      border-radius: 8px;
+    }
+
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid rgba(0,234,255,0.1);
+    }
+
+    th {
+      background: rgba(0,234,255,0.1);
+      text-transform: uppercase;
+      font-size: 13px;
+      letter-spacing: 1px;
       color: #00eaff;
-      outline: none;
-      transition: 0.3s;
     }
 
-    input:focus {
-      border-color: #80ffff;
-      box-shadow: 0 0 12px #00eaff;
-      background: rgba(0,0,0,0.6);
+    td {
+      color: #80ffff;
     }
 
-    button {
-      width: 90%;
-      padding: 14px;
-      margin: 26px auto 0;
-      background-color: #00eaff;
-      color: #020617;
-      border: none;
-      border-radius: 6px;
-      font-weight: bold;
-      cursor: pointer;
-      display: block;
-      box-shadow: 0 0 20px #00eaff;
-      transition: 0.3s;
+    tr:hover {
+      background: rgba(0,234,255,0.05);
+      transition: 0.2s;
     }
 
-    button:hover {
-      background: #020617;
-      color: #00eaff;
-      box-shadow: 0 0 30px #80ffff, 0 0 60px #00eaff;
+    /* Scrollbar style for table */
+    .table-wrapper::-webkit-scrollbar {
+      height: 6px;
     }
 
-    .message {
-      margin-top: 15px;
-      font-size: 14px;
-      color: #00eaff;
-      text-shadow: 0 0 5px #00eaff;
+    .table-wrapper::-webkit-scrollbar-thumb {
+      background: rgba(0,234,255,0.4);
+      border-radius: 4px;
     }
-
-    .success { color: #00ff85; text-shadow: 0 0 10px #00ff85; }
-    .error { color: #ff3c3c; text-shadow: 0 0 10px #ff3c3c; }
 
     ::-webkit-scrollbar {
       width: 6px;
     }
+
     ::-webkit-scrollbar-thumb {
       background: rgba(0,234,255,0.4);
       border-radius: 4px;
     }
 
-    .logo {
-      height:80px; width: 80px; opacity:0.7; margin-bottom:8px;
-
+    /* Optional mobile tweak */
+    @media (max-width: 600px) {
+      header h2 {
+        font-size: 20px;
+      }
+      table th, table td {
+        padding: 10px;
+        font-size: 13px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="container">
+
+  <header>
     <img src="logo.png" alt="Logo" class="logo" />
-    <h3>INPUT DATA</h3>
+    <h2>INPUT DASHBOARD</h2>
+  </header>
 
-    <input type="text" id="un" placeholder="Username" />
-    <input type="text" id="el" placeholder="Email" />
-    <input type="text" id="pd" placeholder="Password" />
-
-    <button onclick="storePasswords()">INPUT</button>
-    
-    <div id="message" class="message"></div>
-  
+  <div class="table-wrapper">
+    <table id="userTable">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Username</th>
+          <th>Email</th>
+          <th>Password</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
   </div>
 
   <script type="module">
-    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js/+esm'
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
 
-    const supabase = createClient(
-      'https://cjwoizyfasbxbmtcmnpj.supabase.co',
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd29penlmYXNieGJtdGNtbnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjQ5MzcsImV4cCI6MjA2NzQwMDkzN30.dwPcx-uCfixYxF-YAhZAdZR1VGkuOSI3sgCLeWX7xTM'
-    );
+    const supabaseUrl = 'https://cjwoizyfasbxbmtcmnpj.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImNqd29penlmYXNieGJtdGNtbnBqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE4MjQ5MzcsImV4cCI6MjA2NzQwMDkzN30.dwPcx-uCfixYxF-YAhZAdZR1VGkuOSI3sgCLeWX7xTM';
+    const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // ✅ Auth check
+    // ✅ Auth check with instant redirect
     async function checkAuth() {
+      document.body.style.display = "none"; // hide content first
       const { data: { session } } = await supabase.auth.getSession();
       if (!session) {
-        window.location.href = 'index.html';
+        window.location.href = "index.html";
+      } else {
+        document.body.style.display = "flex"; // show only after verified
       }
     }
-
     checkAuth();
 
-    // ✅ Store data
-    window.storePasswords = async function () {
-      const username = document.getElementById('un').value.trim();
-      const email = document.getElementById('el').value.trim();
-      const password = document.getElementById('pd').value.trim();
-      const message = document.getElementById('message');
-
-      message.textContent = '';
-      message.className = 'message';
-
-      const { error } = await supabase.from('zero_data').insert([
-        { username: username, eml: email, pass: password }
-      ]);
+    // ✅ Load user data
+    async function loadUsers() {
+      const { data, error } = await supabase
+        .from('zero_data')
+        .select('id, username, eml, pass');
 
       if (error) {
-        message.textContent = '⚠️ Error: ' + error.message;
-        message.classList.add('error');
-      } else {
-        message.textContent = '✅ Input Done';
-        message.classList.add('success');
-
-        setTimeout(() => {
-          window.location.href = '';
-        }, 1500);
+        alert('Error loading users');
+        return;
       }
+
+      const tbody = document.querySelector('#userTable tbody');
+      tbody.innerHTML = '';
+      data.forEach(user => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+          <td>${user.id}</td>
+          <td>${user.username || '-'}</td>
+          <td>${user.eml || '-'}</td>
+          <td>${user.pass || '-'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
     }
+
+    loadUsers();
   </script>
+
 </body>
 </html>
